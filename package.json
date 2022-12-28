@@ -7,10 +7,8 @@
     "yarmd": "bin/yarmd"
   },
   "scripts": {
-    "build": "node_modules/.bin/babel src --out-dir lib",
-    "start": "node ./lib/main.js",
-    "prepublish": "node_modules/.bin/babel src --out-dir lib",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "babel src --out-dir lib",
+    "start": "node ./lib/main.js"
   },
   "repository": {
     "type": "git",
@@ -37,7 +35,7 @@
     "ws": "^8.11.0"
   },
   "devDependencies": {
-    "babel-cli": "^6.23.0",
+    "babel-cli": "^6.26.0",
     "babel-preset-es2015": "^6.22.0"
   }
 }

@@ -3,7 +3,7 @@ yarmd - Yet Another Recursive Multi-thread Downloader
 
 Refactored the calling process based on aria2.js. Real multithreading.
 
-Moving to Windows.
+Works fine on both macOS and Windows.
 
 Usage
 ---
