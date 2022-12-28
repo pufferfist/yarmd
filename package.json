@@ -1,6 +1,6 @@
 {
   "name": "yarmd",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Yet Another Recursive Multi-thread Downloader (A wrapper script around aria2, Nginx autoindex required)",
   "main": "lib/main.js",
   "bin": {
@@ -14,18 +14,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/PeterCxy/yarmd.git"
+    "url": "https://github.com/pufferfist/yarmd.git"
   },
   "keywords": [
     "recursive",
     "downloader"
   ],
-  "author": "PeterCxy",
+  "author": "PeterCxy, pufferfist",
   "license": "WTFPL",
-  "bugs": {
-    "url": "https://github.com/PeterCxy/yarmd/issues"
-  },
-  "homepage": "https://github.com/PeterCxy/yarmd#readme",
   "babel": {
     "presets": [
       "es2015"
