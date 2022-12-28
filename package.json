@@ -4,11 +4,11 @@
   "description": "Yet Another Recursive Multi-thread Downloader (A wrapper script around aria2, Nginx autoindex required)",
   "main": "lib/main.js",
   "bin": {
-    "yarmd": "./bin/yarmd"
+    "yarmd": "bin/yarmd"
   },
   "scripts": {
     "build": "node_modules/.bin/babel src --out-dir lib",
-    "start": "node_modules/.bin/babel src --out-dir lib && node ./lib/main.js",
+    "start": "node ./lib/main.js",
     "prepublish": "node_modules/.bin/babel src --out-dir lib",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -32,11 +32,13 @@
     ]
   },
   "dependencies": {
+    "aria2": "^4.1.2",
     "jsdom": "^9.11.0",
+    "node-fetch": "^2.6.7",
     "optimist": "^0.6.1",
     "request": "^2.80.0",
-    "shell-escape": "^0.2.0",
-    "winston": "^2.3.1"
+    "winston": "^2.3.1",
+    "ws": "^8.11.0"
   },
   "devDependencies": {
     "babel-cli": "^6.23.0",

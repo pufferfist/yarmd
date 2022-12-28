@@ -1,11 +1,22 @@
 "use strict"
 import * as fs from "fs"
 import * as path from "path"
-import { parse as parseURL } from "url"
-import { logger } from "./log"
-import { parseIndex } from "./parser"
-import { execSync } from "child_process"
-import { default as escape } from "shell-escape"
+import {parse as parseURL} from "url"
+import {logger} from "./log"
+import {parseIndex} from "./parser"
+
+import Aria2 from "aria2";
+import ws from "ws";
+import nodefetch from "node-fetch";
+
+const aria2 = new Aria2({
+    WebSocket: ws,
+    fetch: nodefetch,
+    host: 'localhost',
+    port: 6800,
+    secure: false,
+    path: '/jsonrpc'
+});
 
 export function recursiveDownload(dir, url, threads, callback) {
     logger.info(`Parsing index: ${hrefWithoutAuth(url)}`)
@@ -20,7 +31,7 @@ export function recursiveDownload(dir, url, threads, callback) {
         let pathName = path.join(dir, '/' + urlToDir(url))
         fs.exists(pathName, (exists) => {
             if (!exists) {
-                fs.mkdir(pathName)
+                fs.mkdirSync(pathName)
             }
             _recursiveDownload(pathName, index, url, threads, callback)
         })
@@ -29,7 +40,13 @@ export function recursiveDownload(dir, url, threads, callback) {
 
 function _recursiveDownload(pathName, index, baseURL, threads, callback) {
     let pending = []
-    index.forEach((f) => {
+    let config = {
+        dir: pathName,
+        'max-connection-per-server': 15,
+        split: 5,
+        'file-allocation': 'falloc'
+    }
+    for (const f of index) {
         if (f.endsWith('/')) {
             // A directory
             pending.push(f)
@@ -41,10 +58,10 @@ function _recursiveDownload(pathName, index, baseURL, threads, callback) {
             logger.info(`File name: ${fileName}`)
             let aria2File = fileName + '.aria2'
             if (!fs.existsSync(fileName) || (fs.existsSync(fileName) && fs.existsSync(aria2File))) {
-                execSync(escape(['aria2c', '-s', threads, '-d', pathName, fileURL]), {stdio:[0,1,2]})
+                aria2.call("addUri", [fileURL], config);
             }
         }
-    })
+    }
     if (pending.length == 0) {
         callback()
     } else {
