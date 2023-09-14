@@ -38,7 +38,8 @@ export function recursiveDownload(dir, url, threads, callback) {
     })
 }
 
-function _recursiveDownload(pathName, index, baseURL, threads, callback) {
+const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay))
+async function _recursiveDownload(pathName, index, baseURL, threads, callback) {
     let pending = []
     let config = {
         dir: pathName,
@@ -58,6 +59,13 @@ function _recursiveDownload(pathName, index, baseURL, threads, callback) {
             logger.info(`File name: ${fileName}`)
             let aria2File = fileName + '.aria2'
             if (!fs.existsSync(fileName) || (fs.existsSync(fileName) && fs.existsSync(aria2File))) {
+                let waitTime=1000;
+                //aria2 waiting queue reaches threshold around 1800
+                while((await aria2.call("getGlobalStat")).numWaiting>1800){
+                    // console.log('waiting ....')
+                    await sleep(waitTime);
+                    waitTime*=2;
+                }
                 aria2.call("addUri", [fileURL], config);
             }
         }
@@ -67,6 +75,10 @@ function _recursiveDownload(pathName, index, baseURL, threads, callback) {
     } else {
         downloadPending(pathName, baseURL, threads, pending, 0, callback)
     }
+}
+
+function waiting(){
+
 }
 
 function downloadPending(pathName, baseURL, threads, pending, i, callback) {
