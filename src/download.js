@@ -4,20 +4,14 @@ import * as path from "path"
 import {parse as parseURL} from "url"
 import {logger} from "./log"
 import {parseIndex} from "./parser"
+import {sleep, aria2} from "./util";
 
-import Aria2 from "aria2";
-import ws from "ws";
-import nodefetch from "node-fetch";
-
-const aria2 = new Aria2({
-    WebSocket: ws,
-    fetch: nodefetch,
-    host: 'localhost',
-    port: 6800,
-    secure: false,
-    path: '/jsonrpc'
-});
-
+export function downloadRoot(dir, url, threads, callback){
+    recursiveDownload(dir, url, threads,() => {
+        logger.info('Download complete.')
+    })
+    callback(aria2)
+}
 export function recursiveDownload(dir, url, threads, callback) {
     logger.info(`Parsing index: ${hrefWithoutAuth(url)}`)
     parseIndex(url.href, (err, index) => {
@@ -38,7 +32,7 @@ export function recursiveDownload(dir, url, threads, callback) {
     })
 }
 
-const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay))
+
 async function _recursiveDownload(pathName, index, baseURL, threads, callback) {
     let pending = []
     let config = {
@@ -75,10 +69,6 @@ async function _recursiveDownload(pathName, index, baseURL, threads, callback) {
     } else {
         downloadPending(pathName, baseURL, threads, pending, 0, callback)
     }
-}
-
-function waiting(){
-
 }
 
 function downloadPending(pathName, baseURL, threads, pending, i, callback) {
