@@ -8,7 +8,8 @@
   },
   "scripts": {
     "build": "babel src --out-dir lib",
-    "start": "node ./lib/main.js"
+    "start": "node ./lib/main.js",
+    "server": "node ./lib/server.js"
   },
   "repository": {
     "type": "git",
@@ -27,6 +28,8 @@
   },
   "dependencies": {
     "aria2": "^4.1.2",
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
     "jsdom": "^9.11.0",
     "node-fetch": "^2.6.7",
     "optimist": "^0.6.1",

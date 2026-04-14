@@ -1,0 +1,16 @@
+{
+    "manifest_version": 3,
+    "name": "yarmd",
+    "version": "0.1.0",
+    "description": "Recursively download nginx autoindex directories via the local yarmd server",
+    "permissions": ["contextMenus", "storage", "notifications"],
+    "host_permissions": ["http://localhost/*", "http://127.0.0.1/*"],
+    "background": { "service_worker": "background.js" },
+    "action": { "default_title": "yarmd options" },
+    "options_page": "options.html",
+    "icons": {
+        "16": "icons/16.png",
+        "48": "icons/48.png",
+        "128": "icons/128.png"
+    }
+}

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>yarmd Options</title>
+    <style>
+        body {
+            font-family: Segoe UI, sans-serif;
+            font-size: 13px;
+            margin: 0;
+            padding: 20px;
+            background: #1e1e1e;
+            color: #e0e0e0;
+            max-width: 560px;
+        }
+        h2 { color: #9cdcfe; margin-top: 0; }
+        h3 { color: #dcdcaa; font-size: 13px; margin-bottom: 6px; }
+        .row { margin-bottom: 16px; }
+        label { display: block; margin-bottom: 4px; color: #b0b0b0; }
+        input[type=text] {
+            width: 100%;
+            box-sizing: border-box;
+            background: #252526;
+            border: 1px solid #3c3c3c;
+            color: #e0e0e0;
+            padding: 6px 8px;
+            border-radius: 2px;
+            font-family: Consolas, monospace;
+            font-size: 12px;
+        }
+        input[type=text]:focus { outline: 1px solid #0e639c; }
+        button {
+            background: #0e639c;
+            border: none;
+            color: white;
+            padding: 6px 16px;
+            cursor: pointer;
+            border-radius: 2px;
+            font-size: 12px;
+        }
+        button:hover { background: #1177bb; }
+        button.danger { background: #6e1a1a; }
+        button.danger:hover { background: #8a2020; }
+        #save-status, #cancel-status {
+            display: inline-block;
+            margin-left: 10px;
+            color: #4ec9b0;
+        }
+        .error { color: #f48771 !important; }
+        hr { border: none; border-top: 1px solid #3c3c3c; margin: 24px 0; }
+    </style>
+</head>
+<body>
+    <h2>yarmd Options</h2>
+
+    <div class="row">
+        <label for="serverUrl">Server URL</label>
+        <input type="text" id="serverUrl" placeholder="http://localhost:7727">
+    </div>
+
+    <div class="row">
+        <label for="defaultDir">Default starting directory (dialog opens here)</label>
+        <input type="text" id="defaultDir" placeholder="e.g. Z:\aria2download (blank = drive list)">
+    </div>
+
+    <div class="row">
+        <button id="save">Save</button>
+        <span id="save-status"></span>
+    </div>
+
+    <hr>
+
+    <h3>Shutdown control</h3>
+    <div class="row">
+        <p style="color: #b0b0b0; margin: 0 0 10px 0;">
+            Cancels any pending "shutdown after download" flag on the server.
+            Use this if you requested shutdown but changed your mind.
+        </p>
+        <button class="danger" id="cancelShutdown">Cancel pending shutdown</button>
+        <span id="cancel-status"></span>
+    </div>
+
+    <script src="options.js"></script>
+</body>
+</html>

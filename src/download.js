@@ -4,7 +4,7 @@ import * as path from "path"
 import {parse as parseURL} from "url"
 import {logger} from "./log"
 import {parseIndex} from "./parser"
-import {sleep, aria2} from "./util";
+import {sleep, aria2, DOWNLOAD_CONFIG} from "./util";
 
 export function downloadRoot(dir, url, threads, callback){
     recursiveDownload(dir, url, threads,() => {
@@ -35,12 +35,7 @@ export function recursiveDownload(dir, url, threads, callback) {
 
 async function _recursiveDownload(pathName, index, baseURL, threads, callback) {
     let pending = []
-    let config = {
-        dir: pathName,
-        'max-connection-per-server': 15,
-        split: 5,
-        'file-allocation': 'falloc'
-    }
+    let config = Object.assign({ dir: pathName }, DOWNLOAD_CONFIG)
     for (const f of index) {
         if (f.endsWith('/')) {
             // A directory

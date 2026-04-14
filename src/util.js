@@ -5,6 +5,12 @@ import { exec } from "child_process";
 
 export const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay))
 
+export const DOWNLOAD_CONFIG = {
+    'max-connection-per-server': 16,
+    split: 16,
+    'file-allocation': 'trunc'
+}
+
 export const aria2 = new Aria2({
     WebSocket: ws,
     fetch: nodefetch,
