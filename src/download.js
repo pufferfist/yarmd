@@ -16,10 +16,13 @@ export function recursiveDownload(dir, url, threads, callback) {
     logger.info(`Parsing index: ${hrefWithoutAuth(url)}`)
     parseIndex(url.href, (err, index) => {
         if (err != null) {
-            throw err
+            logger.error(`Failed to parse index: ${err.message}`)
+            callback()
+            return
         }
         if (index == null || index.length == 0) {
-            logger.info(`Empty directory. Aborting.`)
+            logger.info(`Empty directory, skipping.`)
+            callback()
             return
         }
         let pathName = path.join(dir, '/' + urlToDir(url))
