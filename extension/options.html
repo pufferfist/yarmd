@@ -48,6 +48,36 @@
         }
         .error { color: #f48771 !important; }
         hr { border: none; border-top: 1px solid #3c3c3c; margin: 24px 0; }
+        #favList {
+            list-style: none; padding: 0; margin: 0 0 10px 0;
+        }
+        #favList li {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 4px 8px; background: #252526; border: 1px solid #3c3c3c;
+            border-radius: 2px; margin-bottom: 4px;
+            font-family: Consolas, monospace; font-size: 12px;
+        }
+        #favList li .remove {
+            background: none; border: none; color: #f48771; cursor: pointer;
+            padding: 0 4px; font-size: 14px;
+        }
+        #favList li .remove:hover { color: #ff6b5a; }
+        .browse-bar {
+            display: flex; gap: 8px; margin-bottom: 6px;
+        }
+        .browse-bar input { flex: 1; }
+        #browseDirs {
+            list-style: none; padding: 0; margin: 0;
+            background: #252526; border: 1px solid #3c3c3c; border-radius: 3px;
+            height: 180px; overflow-y: auto;
+        }
+        #browseDirs li {
+            padding: 3px 10px; cursor: pointer; border-bottom: 1px solid #2d2d2d;
+            font-family: Consolas, monospace; font-size: 12px;
+        }
+        #browseDirs li:hover { background: #094771; }
+        #browseDirs li.parent-item { color: #dcdcaa; }
+        #fav-status { margin-left: 10px; color: #4ec9b0; font-size: 12px; }
     </style>
 </head>
 <body>
@@ -62,6 +92,27 @@
         <label for="defaultDir">Default starting directory (dialog opens here)</label>
         <input type="text" id="defaultDir" placeholder="e.g. Z:\aria2download (blank = drive list)">
     </div>
+
+    <hr>
+
+    <h3>Favorite paths</h3>
+    <div class="row">
+        <p style="color: #b0b0b0; margin: 0 0 10px 0;">
+            Quick-access paths shown at the top of the download dialog. Browse to a folder and click "Add current".
+        </p>
+        <ul id="favList"></ul>
+    </div>
+    <div class="row">
+        <div class="browse-bar">
+            <input type="text" id="browsePath" placeholder="(drives)" />
+            <button id="browseGo">Go</button>
+        </div>
+        <ul id="browseDirs"></ul>
+        <button id="addCurrent" style="margin-top: 6px;">Add current path to favorites</button>
+        <span id="fav-status"></span>
+    </div>
+
+    <hr>
 
     <div class="row">
         <button id="save">Save</button>
@@ -80,6 +131,7 @@
         <span id="cancel-status"></span>
     </div>
 
+    <script src="browse.js"></script>
     <script src="options.js"></script>
 </body>
 </html>

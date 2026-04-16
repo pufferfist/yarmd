@@ -1,75 +1,47 @@
 const DEFAULT_SERVER = "http://localhost:7727"
 
-let currentPath = ""
 let serverUrl = DEFAULT_SERVER
 let pendingUrl = ""
+let browser
 
 async function init() {
     const sess = await chrome.storage.session.get("pendingUrl")
     pendingUrl = sess.pendingUrl || ""
     document.getElementById("url").textContent = pendingUrl || "(no url)"
 
-    const cfg = await chrome.storage.sync.get(["serverUrl", "defaultDir"])
+    const cfg = await chrome.storage.sync.get(["serverUrl", "defaultDir", "favorites"])
     if (cfg.serverUrl) serverUrl = cfg.serverUrl
+    renderFavorites(cfg.favorites || [])
+
+    browser = createBrowser("current", "dirs", () => serverUrl)
 
     document.getElementById("go").addEventListener("click", () => {
-        navigate(document.getElementById("current").value)
+        browser.navigate(document.getElementById("current").value)
     })
     document.getElementById("current").addEventListener("keydown", (e) => {
-        if (e.key === "Enter") navigate(e.target.value)
+        if (e.key === "Enter") browser.navigate(e.target.value)
     })
     document.getElementById("download").addEventListener("click", submit)
     document.getElementById("cancel").addEventListener("click", () => window.close())
 
-    await navigate(cfg.defaultDir || "")
+    await browser.navigate(cfg.defaultDir || "")
 }
 
-async function navigate(p) {
-    try {
-        const res = await fetch(`${serverUrl}/browse?path=${encodeURIComponent(p || "")}`)
-        if (!res.ok) {
-            const data = await res.json().catch(() => ({}))
-            showError(data.error || `HTTP ${res.status}`)
-            return
-        }
-        const data = await res.json()
-        currentPath = data.path || ""
-        document.getElementById("current").value = currentPath
-        clearStatus()
-
-        const list = document.getElementById("dirs")
-        list.innerHTML = ""
-
-        if (data.drives && data.drives.length > 0) {
-            // Drive list
-            data.drives.forEach(d => list.appendChild(dirItem(d, d, false)))
-            return
-        }
-
-        if (data.parent !== null && data.parent !== undefined) {
-            list.appendChild(dirItem("..", data.parent, true))
-        }
-        data.dirs.forEach(name => {
-            const target = joinPath(currentPath, name)
-            list.appendChild(dirItem(name, target, false))
+function renderFavorites(favs) {
+    if (!favs || favs.length === 0) return
+    document.getElementById("fav-row").style.display = ""
+    const container = document.getElementById("favorites")
+    container.innerHTML = ""
+    favs.forEach(fav => {
+        const btn = document.createElement("button")
+        btn.classList.add("fav-chip")
+        btn.textContent = fav
+        btn.addEventListener("click", () => {
+            browser.setPath(fav)
+            browser.navigate(fav)
         })
-    } catch (err) {
-        showError("Cannot reach server: " + err.message)
-    }
-}
-
-function dirItem(label, target, isParent) {
-    const li = document.createElement("li")
-    li.textContent = label
-    if (isParent) li.classList.add("parent")
-    li.addEventListener("click", () => navigate(target))
-    return li
-}
-
-function joinPath(base, child) {
-    if (!base) return child
-    if (base.endsWith("\\") || base.endsWith("/")) return base + child
-    return base + "\\" + child
+        container.appendChild(btn)
+    })
 }
 
 async function submit() {
@@ -77,7 +49,7 @@ async function submit() {
         showError("No URL to download")
         return
     }
-    if (!currentPath) {
+    if (!browser.getPath()) {
         showError("Select a download directory")
         return
     }
@@ -88,7 +60,7 @@ async function submit() {
         const res = await fetch(`${serverUrl}/download`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ url: pendingUrl, dir: currentPath, shutdown }),
+            body: JSON.stringify({ url: pendingUrl, dir: browser.getPath(), shutdown }),
         })
         const data = await res.json().catch(() => ({}))
         if (!res.ok) {

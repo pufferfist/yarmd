@@ -105,12 +105,28 @@
         button:disabled { opacity: 0.5; cursor: default; }
         #status { margin-top: 8px; min-height: 1.2em; color: #4ec9b0; font-size: 12px; }
         #status.error { color: #f48771; }
+        #favorites { display: flex; flex-wrap: wrap; gap: 4px; }
+        #favorites .fav-chip {
+            background: #0e639c;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 11px;
+            font-family: Consolas, monospace;
+            border: none;
+        }
+        #favorites .fav-chip:hover { background: #1177bb; }
     </style>
 </head>
 <body>
     <div class="row">
         <h3>URL</h3>
         <div class="url-box" id="url">Loading...</div>
+    </div>
+    <div class="row" id="fav-row" style="display:none;">
+        <h3>Favorites</h3>
+        <div id="favorites"></div>
     </div>
     <div class="row">
         <h3>Download to</h3>
@@ -130,6 +146,7 @@
         </div>
     </div>
     <div id="status"></div>
+    <script src="browse.js"></script>
     <script src="dialog.js"></script>
 </body>
 </html>
